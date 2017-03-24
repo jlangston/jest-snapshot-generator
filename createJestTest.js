@@ -1,22 +1,21 @@
 function createJestTest(filename) {
-    const fileWithOutExt = filename.replace(/\.[^/.]+$/, "");
-    const readableFilename = capitalizeFirstLetter(fileWithOutExt);
-    return (
-`import React from 'react';
-import renderer from 'react-test-renderer';
+  const fileWithOutExt = filename.replace(/\.[^/.]+$/, '');
+  const readableFilename = capitalizeFirstLetter(fileWithOutExt);
+  return `import React from 'react';
+import { shallow } from 'enzyme';
 import ${readableFilename} from '../${readableFilename}';
-test('Should render ${readableFilename} correctly', () => {
-    const tree = renderer.create(
-        <${readableFilename} /> 
-    ).toJSON();
-    expect(tree).toMatchSnapshot();
-});
-    `
-    );
 
+describe('${readableFilename}', () => {
+  it('Should render ${readableFilename} correctly', () => {
+    const component = shallow(<${readableFilename} />);
+    expect(component).toMatchSnapshot();
+  });
+});
+
+`;
 }
 
-const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1)
-
+const capitalizeFirstLetter = string =>
+  string.charAt(0).toUpperCase() + string.slice(1);
 
 module.exports = { createJestTest };
